@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApia.Shared", "src\RestApia.Shared\RestApia.Shared.csproj", "{BF1B9820-AB0D-77E6-5027-0C003EAE48D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{E2CF6B65-E284-39DA-C77D-4FDAB55B16AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApia.Extensions.Auth.Basic", "src\Extensions\RestApia.Extensions.Auth.Basic\RestApia.Extensions.Auth.Basic.csproj", "{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApia.Extensions.Auth.OAuth2", "src\Extensions\RestApia.Extensions.Auth.OAuth2\RestApia.Extensions.Auth.OAuth2.csproj", "{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Builder.Shared", ".build\Builder.Shared.csproj", "{EF392B68-6342-4290-AC77-287603D43A0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{D8C602A6-0B21-4230-98F2-A2BEBEEA783C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF392B68-6342-4290-AC77-287603D43A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF392B68-6342-4290-AC77-287603D43A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1B9820-AB0D-77E6-5027-0C003EAE48D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF1B9820-AB0D-77E6-5027-0C003EAE48D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF1B9820-AB0D-77E6-5027-0C003EAE48D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1B9820-AB0D-77E6-5027-0C003EAE48D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B2C67A1-83B9-157D-5EAF-ADD07B0E8D3F} = {E2CF6B65-E284-39DA-C77D-4FDAB55B16AD}
+		{AE97EEF8-CE4E-0976-B0FB-8C4FC7616E01} = {E2CF6B65-E284-39DA-C77D-4FDAB55B16AD}
+		{EF392B68-6342-4290-AC77-287603D43A0B} = {D8C602A6-0B21-4230-98F2-A2BEBEEA783C}
+	EndGlobalSection
+EndGlobal

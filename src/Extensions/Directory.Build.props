@@ -1,0 +1,9 @@
+﻿<Project>
+  <Import Project="..\Directory.Build.props"/>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>
