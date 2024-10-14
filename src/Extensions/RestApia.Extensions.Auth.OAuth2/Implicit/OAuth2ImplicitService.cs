@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using Microsoft.Extensions.Logging;
 using RestApia.Shared.Common;
 using RestApia.Shared.Extensions.Interfaces;
 using RestApia.Shared.Extensions.Models;
@@ -35,7 +34,7 @@ public class OAuth2ImplicitService : IAuthService
     {
         if (settingsObj is not OAuth2ImplicitSettings settings)
         {
-            _logger.LogWarning("Invalid settings type '{SettingsType}' for service {DisplayName} found", settingsObj?.GetType(), DisplayName);
+            _logger.Warn($"Invalid settings type '{settingsObj?.GetType()}' for service {DisplayName} found");
             return false;
         }
 
@@ -69,7 +68,7 @@ public class OAuth2ImplicitService : IAuthService
         var result = await _dialogs.OpenAuthBrowserAsync(startUrl, stopUrl, "OAuth2 Implicit");
         if (result == null)
         {
-            _logger.LogDebug("Auth canceled by user");
+            _logger.Debug("Auth canceled by user");
             return false;
         }
 
@@ -85,7 +84,7 @@ public class OAuth2ImplicitService : IAuthService
         DateTime? expiresAt = null;
         if (!OAuth2Helper.TryParseToken(tokenString, _logger, out var token))
         {
-            _logger.LogWarning("Cannot validate JWT token, expiration date will not be set");
+            _logger.Warn("Cannot validate JWT token, expiration date will not be set");
         }
         else
         {

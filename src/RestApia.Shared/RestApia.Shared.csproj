@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>RestApia Extensions shared Library</Title>
+    <Description>Provides interfaces for communication with application</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/RestApia/RestApia.Community</RepositoryUrl>
+    <RepositoryUrl>https://github.com/RestApia/RestApia.Shared</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
   </PropertyGroup>
   
   <ItemGroup>

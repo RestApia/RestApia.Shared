@@ -2,9 +2,16 @@
   <Import Project="..\Directory.Build.props"/>
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/RestApia/RestApia.Shared</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>RestApia, Extension</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
   <Target Name="PublishToLocal" AfterTargets="Pack" Condition="'$(Configuration)' == 'Debug'">
     <ItemGroup>
@@ -13,5 +20,9 @@
     <Message Text="NuGetPackages: @(NuGetPackages)" Importance="high"/>
     <Copy SourceFiles="@(NuGetPackages)" DestinationFolder="$(ProjectDir)..\..\..\.local\nugets"/>
   </Target>
+
+  <ItemGroup>
+    <PackageReference Include="RestApia.Shared" Version="1.0.4" />
+  </ItemGroup>
 
 </Project>

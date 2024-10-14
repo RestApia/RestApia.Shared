@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestApia.Shared.Common;
@@ -40,7 +39,7 @@ public class OAuth2AuthCodeService : IAuthService
     {
         if (settingsObj is not OAuth2AuthCodeSettings settings)
         {
-            _logger.LogWarning("Invalid settings type '{SettingsType}' for service {DisplayName} found", settingsObj?.GetType(), DisplayName);
+            _logger.Warn($"Invalid settings type '{settingsObj?.GetType()}' for service {DisplayName} found");
             return false;
         }
 
@@ -55,7 +54,7 @@ public class OAuth2AuthCodeService : IAuthService
         DateTime? expiresAt = null;
         if (!OAuth2Helper.TryParseToken(tokenString, _logger, out var token))
         {
-            _logger.LogWarning("Cannot validate JWT token, expiration date will not be set");
+            _logger.Warn("Cannot validate JWT token, expiration date will not be set");
         }
         else
         {

@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Web;
-using Microsoft.Extensions.Logging;
+using RestApia.Shared.Extensions.Interfaces;
 using RestApia.Shared.Extensions.Models;
 using RestApia.Shared.Values.Enums;
 
@@ -17,7 +17,7 @@ internal static class OAuth2Helper
         result = null;
         if (string.IsNullOrWhiteSpace(token))
         {
-            logger.LogWarning("Cannot parse empty JWT token");
+            logger.Warn("Cannot parse empty JWT token");
             return false;
         }
 
@@ -29,7 +29,7 @@ internal static class OAuth2Helper
         }
         catch (Exception ex)
         {
-            logger.LogError("Error during JWT token parsing: {ExMessage}", ex.Message);
+            logger.Fail(ex, "Error during JWT token parsing");
             return false;
         }
     }

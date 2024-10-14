@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <PackageReference Include="RestApia.Shared" Version="1.0.0" />
-  </ItemGroup>
+  <PropertyGroup>
+    <Title>Basic Authorization extension</Title>
+    <Description>Basic Authorization extension for RestApia. Generate Authorizatoin header based on settings for requests.</Description>
+    <Version>1.0.6</Version>
+  </PropertyGroup>
 </Project>
