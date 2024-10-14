@@ -49,7 +49,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <AdditionalFiles Include="$(SolutionDir)/stylecop.json"/>
+    <AdditionalFiles Include="$(SolutionDir)/src/stylecop.json"/>
   </ItemGroup>
 
 </Project>
