@@ -1,44 +1,27 @@
-using System;
-using System.Linq;
+using System.IO;
+using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 using Nuke.Common;
-using Nuke.Common.CI;
-using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 
-class Build : NukeBuild
+partial class Build : NukeBuild
 {
-    /// Support plugins are available for:
-    ///   - JetBrains ReSharper        https://nuke.build/resharper
-    ///   - JetBrains Rider            https://nuke.build/rider
-    ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-    ///   - Microsoft VSCode           https://nuke.build/vscode
-
-    public static int Main () => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Solution_Clean);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    Target Clean => _ => _
-        .Before(Restore)
-        .Executes(() =>
-        {
-        });
+    [Solution]
+    readonly Solution Solution;
 
-    Target Restore => _ => _
-        .Executes(() =>
-        {
-        });
+    [CanBeNull]
+    JObject _settings;
 
-    Target Compile => _ => _
-        .DependsOn(Restore)
-        .Executes(() =>
-        {
-        });
+    JObject Settings => _settings ??= !File.Exists(RootDirectory / "settings.local.json5")
+        ? new JObject()
+        : JObject.Parse(File.ReadAllText(RootDirectory / "settings.local.json5"));
 
+    // paths
+    AbsolutePath OutputDirectory => RootDirectory / ".local" / "builds";
 }
