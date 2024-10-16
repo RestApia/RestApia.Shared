@@ -8,6 +8,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tools.DotNet;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -17,9 +18,12 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 partial class Build
 {
+    AbsolutePath SharedDirectory => OutputDirectory / "RestApia.Shared";
+
     [Parameter("Shared library version")]
     string SharedLibVersion = EnvironmentInfo.GetVariable<string>("SHARED_LIB_VERSION") ?? string.Empty;
 
+    [Parameter("NuGet push API key")]
     string PushApiKey => EnvironmentInfo.GetVariable<string>("NUGET_API") ?? Settings.Value<string>("nuget_push_api_key");
 
     Target Shared_FindNextVersion => _ => _

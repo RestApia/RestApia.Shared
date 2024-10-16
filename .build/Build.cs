@@ -24,5 +24,4 @@ partial class Build : NukeBuild
 
     // paths
     AbsolutePath OutputDirectory => RootDirectory / ".local" / "builds";
-    AbsolutePath SharedDirectory => OutputDirectory / "RestApia.Shared";
 }
