@@ -24,7 +24,7 @@ partial class Build
     string SharedLibVersion = EnvironmentInfo.GetVariable<string>("SHARED_LIB_VERSION") ?? string.Empty;
 
     [Parameter("NuGet push API key")]
-    string PushApiKey => EnvironmentInfo.GetVariable<string>("NUGET_API") ?? Settings.Value<string>("nuget_push_api_key");
+    string PushApiKey => EnvironmentInfo.GetVariable<string>("NUGET_PUSH_SHARED") ?? Settings.Value<string>("nuget_push_api_key");
 
     Target Shared_FindNextVersion => _ => _
         .OnlyWhenDynamic(() => string.IsNullOrWhiteSpace(SharedLibVersion))

@@ -18,7 +18,6 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [SuppressMessage("ReSharper", "CheckNamespace")]
 partial class Build
 {
-    [Required]
     [Parameter("Extension library name")]
     string ExtensionName = EnvironmentInfo.GetVariable<string>("EXTENSION_NAME") ?? string.Empty;
 
