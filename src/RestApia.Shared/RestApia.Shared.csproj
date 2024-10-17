@@ -14,12 +14,4 @@
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
-
-  <Target Name="PublishToLocal" AfterTargets="Pack" Condition="'$(Configuration)' == 'Debug'">
-    <ItemGroup>
-      <NuGetPackages Include="$(PackageOutputPath)RestApia.Shared.*.nupkg"/>
-    </ItemGroup>
-    <Message Text="NuGetPackages: @(NuGetPackages)" Importance="high"/>
-    <Copy SourceFiles="@(NuGetPackages)" DestinationFolder="$(ProjectDir)..\..\.local\nugets"/>
-  </Target>
 </Project>
