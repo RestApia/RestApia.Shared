@@ -12,16 +12,16 @@ public class BasicAuthService : IAuthService
     public bool IsReloadFeatureAvailable => false;
     public bool IsShowPayloadFeatureAvailable => true;
 
-    public Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId) => Task.FromResult(GetValues(settingsObj));
+    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId) => Task.FromResult(GetValues(settingsObj));
 
-    private static IReadOnlyCollection<ValueModel> GetValues(object rawSettings)
+    private static IReadOnlyCollection<ExtensionValueModel> GetValues(object rawSettings)
     {
         if (rawSettings is not BasicAuthSettings settings) return [];
         var token = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{settings.UserName}:{settings.Password}"));
 
         return
         [
-            new () { Name = "Authorization", Type = ValuesContentItemTypeEnum.Header, Value = $"Basic {token}" },
+            new () { Name = "Authorization", Type = ValueTypeEnum.Header, Value = $"Basic {token}" },
         ];
     }
 

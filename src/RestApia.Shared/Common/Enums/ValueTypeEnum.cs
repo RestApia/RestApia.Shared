@@ -1,6 +1,6 @@
 ﻿namespace RestApia.Shared.Common.Enums;
 
-public enum ValuesContentItemTypeEnum
+public enum ValueTypeEnum
 {
     Variable,
     Header,

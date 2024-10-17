@@ -8,6 +8,6 @@ public interface IAuthService
     bool IsShowPayloadFeatureAvailable { get; }
 
     Type SettingsType { get; }
-    Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId);
+    Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId);
     Task<bool> ReloadAsync(object settings, Guid authId);
 }

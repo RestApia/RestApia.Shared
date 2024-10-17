@@ -24,7 +24,7 @@ public class OAuth2ImplicitService : IAuthService
     public bool IsShowPayloadFeatureAvailable => true;
     public Type SettingsType => typeof(OAuth2ImplicitSettings);
 
-    public Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId)
+    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId)
     {
         var result = _storage.GetValues(authId);
         result = [..result, ..OAuth2Helper.GetCustomValues(result, _logger)];
@@ -92,12 +92,12 @@ public class OAuth2ImplicitService : IAuthService
             expiresAt = token.ValidTo;
         }
 
-        IReadOnlyCollection<ValueModel> values =
+        IReadOnlyCollection<ExtensionValueModel> values =
         [
             new ()
             {
                 Name = "Authorization",
-                Type = ValuesContentItemTypeEnum.Header,
+                Type = ValueTypeEnum.Header,
                 Value = $"Bearer {tokenString}",
             },
         ];

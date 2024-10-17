@@ -14,6 +14,9 @@ namespace RestApia.Extensions.Import.Postman;
 public class PostmanImportService : IImportService
 {
     /// <inheritdoc />
+    public string DisplayName { get; } = "Postman Collection v2.1 (preview version)";
+
+    /// <inheritdoc />
     public ImportedFileModel Import(string path)
     {
         if (!ReadFile(path, out var content))

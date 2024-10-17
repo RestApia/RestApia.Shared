@@ -25,7 +25,7 @@ public class AuthBasicExperiments
 
         var result = results.First();
         result.Name.Should().Be("Authorization");
-        result.Type.Should().Be(ValuesContentItemTypeEnum.Header);
+        result.Type.Should().Be(ValueTypeEnum.Header);
         result.Value.Should().Be($"Basic {expected}");
     }
 }

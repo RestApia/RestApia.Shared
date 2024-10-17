@@ -3,36 +3,36 @@ namespace RestApia.Extensions.Auth.OAuth2.AuthCode;
 
 public record OAuth2AuthCodeSettings
 {
-    [ValuesContentItem("AuthUrl", "Authorization URL", IsRequired = true)]
+    [ContentValue("AuthUrl", "Authorization URL", IsRequired = true)]
     public required string AuthUrl { get; init; }
 
-    [ValuesContentItem("TokenUrl", "Access token URL", IsRequired = true)]
+    [ContentValue("TokenUrl", "Access token URL", IsRequired = true)]
     public required string AccessTokenUrl { get; init; }
 
-    [ValuesContentItem("RedirectUrl", "Redirect URL", IsRequired = true)]
+    [ContentValue("RedirectUrl", "Redirect URL", IsRequired = true)]
     public required string RedirectUrl { get; init; }
 
-    [ValuesContentItem("ClientId", "Client Id", IsRequired = true)]
+    [ContentValue("ClientId", "Client Id", IsRequired = true)]
     public required string ClientId { get; init; }
 
-    [ValuesContentItem("ClientSecret", "Client secret")]
+    [ContentValue("ClientSecret", "Client secret")]
     public string ClientSecret { get; init; } = string.Empty;
 
-    [ValuesContentItem("SendMethod", "Credentials send method. Can be 'Header' or 'Body'")]
+    [ContentValue("SendMethod", "Credentials send method. Can be 'Header' or 'Body'")]
     public required string CredentialsSendMethod { get; init; }
 
-    [ValuesContentItem("Scopes", "List of scopes, separated by space, comma or semicolon")]
+    [ContentValue("Scopes", "List of scopes, separated by space, comma or semicolon")]
     public string Scopes { get; init; } = string.Empty;
 
-    [ValuesContentItem("Audience", "Audience")]
+    [ContentValue("Audience", "Audience")]
     public string Audience { get; init; } = string.Empty;
 
-    [ValuesContentItem("State", "State")]
+    [ContentValue("State", "State")]
     public string State { get; init; } = string.Empty;
 
-    [ValuesContentItem("Resource", "Resource")]
+    [ContentValue("Resource", "Resource")]
     public string Resource { get; init; } = string.Empty;
 
-    [ValuesContentItem("Origin", "Origin")]
+    [ContentValue("Origin", "Origin")]
     public string Origin { get; init; } = string.Empty;
 }

@@ -4,7 +4,7 @@ namespace RestApia.Shared.Common.Models;
 /// <summary>
 /// Value details.
 /// </summary>
-public record ValueModel
+public record ExtensionValueModel
 {
     /// <summary>
     /// Name of value object.
@@ -19,7 +19,7 @@ public record ValueModel
     /// <summary>
     /// Value type.
     /// </summary>
-    public required ValuesContentItemTypeEnum Type { get; init; }
+    public required ValueTypeEnum Type { get; init; }
 
     /// <summary>
     /// Optional description.

@@ -29,7 +29,7 @@ public class OAuth2AuthCodeService : IAuthService
     public bool IsShowPayloadFeatureAvailable => true;
     public Type SettingsType => typeof(OAuth2AuthCodeSettings);
 
-    public Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId)
+    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId)
     {
         var result = _storage.GetValues(authId);
         result = [..result, ..OAuth2Helper.GetCustomValues(result, _logger)];
@@ -62,12 +62,12 @@ public class OAuth2AuthCodeService : IAuthService
             expiresAt = token.ValidTo;
         }
 
-        IReadOnlyCollection<ValueModel> values =
+        IReadOnlyCollection<ExtensionValueModel> values =
         [
             new ()
             {
                 Name = "Authorization",
-                Type = ValuesContentItemTypeEnum.Header,
+                Type = ValueTypeEnum.Header,
                 Value = $"Bearer {tokenString}",
             },
         ];

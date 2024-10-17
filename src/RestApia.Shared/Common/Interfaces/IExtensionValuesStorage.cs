@@ -9,10 +9,10 @@ public interface IExtensionValuesStorage
     /// <summary>
     /// Read all extension values.
     /// </summary>
-    IReadOnlyCollection<ValueModel> GetValues(Guid dataId);
+    IReadOnlyCollection<ExtensionValueModel> GetValues(Guid dataId);
 
     /// <summary>
     /// Update extension values.
     /// </summary>
-    void SetValues(IReadOnlyCollection<ValueModel> values, Guid dataId, DateTime? expiresAt = null);
+    void SetValues(IReadOnlyCollection<ExtensionValueModel> values, Guid dataId, DateTime? expiresAt = null);
 }
