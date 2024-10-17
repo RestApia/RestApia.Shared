@@ -30,15 +30,14 @@ using Serilog;
 // Continuous Integration: Validate pull requests
 [GitHubActions(
     "pr-validation",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.WindowsLatest,
     InvokedTargets = [
         nameof(Solution_Build),
     ],
-    OnPullRequestBranches = ["master"]
+    OnPullRequestBranches = ["main"]
 )]
-[SuppressMessage("ReSharper", "CheckNamespace")]
 
-// CI/CD targets
+[SuppressMessage("ReSharper", "CheckNamespace")]
 partial class Build
 {
     Target UpdateYaml => _ => _.Executes(() => Log.Information("Generating YAML..."));

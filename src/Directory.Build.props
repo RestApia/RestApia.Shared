@@ -40,5 +40,4 @@
     </PackageReference>
     <AdditionalFiles Include="$(SolutionDir)/src/stylecop.json"/>
   </ItemGroup>
-
 </Project>
