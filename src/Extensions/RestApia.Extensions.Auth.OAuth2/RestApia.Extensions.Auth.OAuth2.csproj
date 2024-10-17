@@ -2,8 +2,8 @@
   <PropertyGroup>
     <Title>OAuth2 Authorization extension</Title>
     <Description>Extension provides OAuth2 Implicit and AuthCode authorizations</Description>
-    <Version>1.0.6</Version>
     <RepositoryUrl>https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.Auth.OAuth2</RepositoryUrl>
+    <PackageTags>RestApiaEmbedded, Extension</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>
