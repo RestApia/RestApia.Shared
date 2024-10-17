@@ -8,7 +8,7 @@ using Serilog;
 
 [GitHubActions(
     "cd-publish-shared",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.WindowsLatest,
     InvokedTargets = [
         nameof(Shared_Push),
     ],
@@ -18,7 +18,7 @@ using Serilog;
 
 [GitHubActions(
     "cd-publish-extension",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.WindowsLatest,
     InvokedTargets = [
         nameof(Extension_Push),
     ],
