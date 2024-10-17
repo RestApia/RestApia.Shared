@@ -2,5 +2,5 @@
 
 public record AuthContentModel : ValuesContentModel
 {
-    public required string AuthorizationServiceName { get; init; }
+    public required string SettingsClassFullName { get; init; }
 }

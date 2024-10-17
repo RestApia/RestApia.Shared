@@ -291,7 +291,6 @@ dotnet_diagnostic.SA1024.severity = none
 dotnet_diagnostic.SA1028.severity = none # Code should not contain trailing whitespace
 dotnet_diagnostic.SA1503.severity = none
 
-[{*Model.cs, *Settings.cs, *Entity.cs, *Result.cs}]
 dotnet_diagnostic.SA1313.severity = none # incorrect for records
 
 [*Tests.cs]

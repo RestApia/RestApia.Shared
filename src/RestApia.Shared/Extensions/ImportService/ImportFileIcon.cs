@@ -1,6 +1,6 @@
 ﻿namespace RestApia.Shared.Extensions.ImportService;
 
-public enum ImportFileType
+public enum ImportFileIcon
 {
     General,
     Collection,

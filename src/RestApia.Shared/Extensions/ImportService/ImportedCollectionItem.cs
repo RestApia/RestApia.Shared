@@ -16,7 +16,7 @@ public record ImportedCollectionItem
     /// <summary>
     /// String content (e.g. request content).
     /// </summary>
-    public required string? Content { get; init; }
+    public string? Content { get; init; }
 
     /// <summary>
     /// Collection item environments.

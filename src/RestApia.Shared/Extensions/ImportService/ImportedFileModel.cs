@@ -19,7 +19,7 @@ public record ImportedFileModel
     /// <summary>
     /// Import file type. To show in UI the icon.
     /// </summary>
-    public ImportFileType Type { get; init; } = ImportFileType.General;
+    public ImportFileIcon Icon { get; init; } = ImportFileIcon.General;
 
     /// <summary>
     /// List of environments for top level workspace.
@@ -39,5 +39,5 @@ public record ImportedFileModel
     /// <summary>
     /// Collection items.
     /// </summary>
-    public IReadOnlyCollection<ImportedCollectionItem> WorkspaceItems { get; init; } = [];
+    public IReadOnlyCollection<ImportedCollectionItem> CollectionItems { get; init; } = [];
 }
