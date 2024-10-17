@@ -34,7 +34,7 @@ using Serilog;
     InvokedTargets = [
         nameof(Solution_Build),
     ],
-    OnPullRequestBranches = ["master"]
+    OnPullRequestBranches = ["main"]
 )]
 [SuppressMessage("ReSharper", "CheckNamespace")]
 
