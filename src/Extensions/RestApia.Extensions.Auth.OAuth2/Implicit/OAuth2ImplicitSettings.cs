@@ -1,4 +1,4 @@
-﻿using RestApia.Shared.Values.Attributes;
+﻿using RestApia.Shared.Common.Attributes;
 namespace RestApia.Extensions.Auth.OAuth2.Implicit;
 
 public record OAuth2ImplicitSettings

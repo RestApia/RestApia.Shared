@@ -1,8 +1,9 @@
 ﻿using System.Web;
 using RestApia.Shared.Common;
-using RestApia.Shared.Extensions.Interfaces;
-using RestApia.Shared.Extensions.Models;
-using RestApia.Shared.Values.Enums;
+using RestApia.Shared.Common.Enums;
+using RestApia.Shared.Common.Interfaces;
+using RestApia.Shared.Common.Models;
+using RestApia.Shared.Extensions.AuthService;
 namespace RestApia.Extensions.Auth.OAuth2.Implicit;
 
 public class OAuth2ImplicitService : IAuthService

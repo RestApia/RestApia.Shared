@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Nuke.Common;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -16,6 +15,13 @@ partial class Build
         {
             if (Directory.Exists(OutputDirectory)) Directory.Delete(OutputDirectory, true);
             DotNetClean(x => x.SetProject(Solution));
+
+            // delete all 'bin' directories
+            foreach (var project in Solution.AllProjects.Where(x => !x.Name.Equals("Builder.Shared", StringComparison.Ordinal)))
+            {
+                var binDir = project.Directory / "bin";
+                if (Directory.Exists(binDir)) Directory.Delete(binDir, true);
+            }
         });
 
     Target Solution_Restore => _ => _

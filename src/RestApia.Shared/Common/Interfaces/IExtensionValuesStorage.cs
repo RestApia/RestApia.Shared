@@ -1,5 +1,5 @@
-﻿using RestApia.Shared.Extensions.Models;
-namespace RestApia.Shared.Extensions.Interfaces;
+﻿using RestApia.Shared.Common.Models;
+namespace RestApia.Shared.Common.Interfaces;
 
 /// <summary>
 /// Extension values storage.

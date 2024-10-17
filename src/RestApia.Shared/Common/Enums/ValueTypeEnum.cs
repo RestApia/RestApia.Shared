@@ -1,4 +1,4 @@
-﻿namespace RestApia.Shared.Values.Enums;
+﻿namespace RestApia.Shared.Common.Enums;
 
 public enum ValueTypeEnum
 {

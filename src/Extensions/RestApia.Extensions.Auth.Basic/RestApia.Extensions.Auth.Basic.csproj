@@ -3,6 +3,6 @@
     <Title>Basic Authorization extension</Title>
     <Description>Generate Authorization header based on settings for requests.</Description>
     <RepositoryUrl>https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.Auth.Basic</RepositoryUrl>
-    <PackageTags>RestApiaEmbedded, Extension</PackageTags>
+    <PackageTags>RestApiaEmbedded, Extension, Authorization</PackageTags>
   </PropertyGroup>
 </Project>

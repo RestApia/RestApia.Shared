@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-namespace RestApia.Shared.Values.Attributes;
+namespace RestApia.Shared.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]

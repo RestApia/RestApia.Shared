@@ -3,9 +3,10 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestApia.Shared.Common;
-using RestApia.Shared.Extensions.Interfaces;
-using RestApia.Shared.Extensions.Models;
-using RestApia.Shared.Values.Enums;
+using RestApia.Shared.Common.Enums;
+using RestApia.Shared.Common.Interfaces;
+using RestApia.Shared.Common.Models;
+using RestApia.Shared.Extensions.AuthService;
 namespace RestApia.Extensions.Auth.OAuth2.AuthCode;
 
 public class OAuth2AuthCodeService : IAuthService

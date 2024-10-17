@@ -67,7 +67,7 @@ partial class Build
         .DependsOn(Extension_Build)
         .Executes(() =>
         {
-            var path = Directory.GetFiles(ExtensionDirectory, "*.nupkg", SearchOption.AllDirectories).FirstOrDefault();
+            var path = Directory.GetFiles(ExtensionDirectory, $"{ExtensionName}.*.nupkg", SearchOption.AllDirectories).FirstOrDefault();
             if (string.IsNullOrWhiteSpace(path)) throw new FileNotFoundException("Extension library wasn't found.");
 
             DotNetNuGetPush(x => x

@@ -2,9 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Web;
-using RestApia.Shared.Extensions.Interfaces;
-using RestApia.Shared.Extensions.Models;
-using RestApia.Shared.Values.Enums;
+using RestApia.Shared.Common.Enums;
+using RestApia.Shared.Common.Interfaces;
+using RestApia.Shared.Common.Models;
 
 namespace RestApia.Extensions.Auth.OAuth2;
 

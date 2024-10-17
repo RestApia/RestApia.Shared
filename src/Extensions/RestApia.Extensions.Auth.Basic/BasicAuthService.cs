@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using RestApia.Shared.Extensions.Interfaces;
-using RestApia.Shared.Extensions.Models;
-using RestApia.Shared.Values.Enums;
+using RestApia.Shared.Common.Enums;
+using RestApia.Shared.Common.Models;
+using RestApia.Shared.Extensions.AuthService;
 namespace RestApia.Extensions.Auth.Basic;
 
 public class BasicAuthService : IAuthService
