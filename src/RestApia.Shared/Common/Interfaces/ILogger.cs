@@ -1,4 +1,4 @@
-﻿namespace RestApia.Shared.Extensions.Interfaces;
+﻿namespace RestApia.Shared.Common.Interfaces;
 
 public interface ILogger
 {

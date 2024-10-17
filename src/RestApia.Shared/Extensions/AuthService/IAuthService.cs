@@ -1,5 +1,5 @@
-﻿using RestApia.Shared.Extensions.Models;
-namespace RestApia.Shared.Extensions.Interfaces;
+﻿using RestApia.Shared.Common.Models;
+namespace RestApia.Shared.Extensions.AuthService;
 
 public interface IAuthService
 {
@@ -8,6 +8,6 @@ public interface IAuthService
     bool IsShowPayloadFeatureAvailable { get; }
 
     Type SettingsType { get; }
-    Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId);
+    Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId);
     Task<bool> ReloadAsync(object settings, Guid authId);
 }

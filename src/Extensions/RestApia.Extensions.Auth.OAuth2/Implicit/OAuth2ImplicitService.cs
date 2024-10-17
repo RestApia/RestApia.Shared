@@ -1,8 +1,9 @@
 ﻿using System.Web;
 using RestApia.Shared.Common;
-using RestApia.Shared.Extensions.Interfaces;
-using RestApia.Shared.Extensions.Models;
-using RestApia.Shared.Values.Enums;
+using RestApia.Shared.Common.Enums;
+using RestApia.Shared.Common.Interfaces;
+using RestApia.Shared.Common.Models;
+using RestApia.Shared.Extensions.AuthService;
 namespace RestApia.Extensions.Auth.OAuth2.Implicit;
 
 public class OAuth2ImplicitService : IAuthService
@@ -23,7 +24,7 @@ public class OAuth2ImplicitService : IAuthService
     public bool IsShowPayloadFeatureAvailable => true;
     public Type SettingsType => typeof(OAuth2ImplicitSettings);
 
-    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId)
+    public Task<IReadOnlyCollection<ValueModel>> GetValuesAsync(object settingsObj, Guid authId)
     {
         var result = _storage.GetValues(authId);
         result = [..result, ..OAuth2Helper.GetCustomValues(result, _logger)];
@@ -91,12 +92,12 @@ public class OAuth2ImplicitService : IAuthService
             expiresAt = token.ValidTo;
         }
 
-        IReadOnlyCollection<ExtensionValueModel> values =
+        IReadOnlyCollection<ValueModel> values =
         [
             new ()
             {
                 Name = "Authorization",
-                Type = ValueTypeEnum.Header,
+                Type = ValuesContentItemTypeEnum.Header,
                 Value = $"Bearer {tokenString}",
             },
         ];
