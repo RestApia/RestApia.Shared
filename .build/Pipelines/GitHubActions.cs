@@ -8,7 +8,7 @@ using Serilog;
 
 [GitHubActions(
     "cd-publish-shared",
-    GitHubActionsImage.WindowsLatest,
+    GitHubActionsImage.UbuntuLatest,
     InvokedTargets = [
         nameof(Shared_Push),
     ],
@@ -18,7 +18,7 @@ using Serilog;
 
 [GitHubActions(
     "cd-publish-extension",
-    GitHubActionsImage.WindowsLatest,
+    GitHubActionsImage.UbuntuLatest,
     InvokedTargets = [
         nameof(Extension_Push),
     ],
@@ -30,15 +30,14 @@ using Serilog;
 // Continuous Integration: Validate pull requests
 [GitHubActions(
     "pr-validation",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.WindowsLatest,
     InvokedTargets = [
         nameof(Solution_Build),
     ],
     OnPullRequestBranches = ["main"]
 )]
-[SuppressMessage("ReSharper", "CheckNamespace")]
 
-// CI/CD targets
+[SuppressMessage("ReSharper", "CheckNamespace")]
 partial class Build
 {
     Target UpdateYaml => _ => _.Executes(() => Log.Information("Generating YAML..."));
