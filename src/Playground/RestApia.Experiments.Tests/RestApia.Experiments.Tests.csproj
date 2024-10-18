@@ -12,7 +12,9 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0"/>
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="NuGet.Protocol" Version="6.11.1" />
     <PackageReference Include="NUnit" Version="3.14.0"/>
     <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
@@ -26,6 +28,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Extensions\RestApia.Extensions.Auth.Basic\RestApia.Extensions.Auth.Basic.csproj" />
     <ProjectReference Include="..\..\Extensions\RestApia.Extensions.Import.Postman\RestApia.Extensions.Import.Postman.csproj" />
+    <ProjectReference Include="..\..\Extensions\RestApia.Extensions.ValuesProvider.AzureKeyVault\RestApia.Extensions.ValuesProvider.AzureKeyVault.csproj" />
+    <ProjectReference Include="..\..\Extensions\RestApia.Extensions.ValuesProvider.CollectionValuesProvider\RestApia.Extensions.ValuesProvider.CollectionValuesProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
