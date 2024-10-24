@@ -1,12 +1,11 @@
-﻿using FluentAssertions;
-using NuGet.Frameworks;
+﻿using NuGet.Frameworks;
 using NuGet.Packaging;
 using RestApia.Shared.Common;
 using RestApia.Shared.Common.Enums;
 using RestApia.Shared.Common.Services;
-namespace RestApia.Experiments.Tests.Extensions;
+namespace RestApia.Experiments.Tests.Other;
 
-public class ValidateMyExtension
+public class ValidateMyExtensionTests
 {
     [TestCase(@"X:\projects\RestApia3\repos\RestApia.Shared\.local\builds\RestApia.Extensions.Import.Postman\RestApia.Extensions.Import.Postman.*.nupkg")]
     [TestCase(@"X:\projects\RestApia3\repos\RestApia.Shared\.local\builds\RestApia.Extensions.Auth.OAuth2\RestApia.Extensions.Auth.OAuth2.*.nupkg")]

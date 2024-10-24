@@ -34,7 +34,7 @@ internal static class ImportAuthOAuth2
         return new AuthContentModel
         {
             Name = "OAuth2 - Authorization Code",
-            SettingsClassFullName = "RestApia.Extensions.Auth.OAuth2.AuthCode.OAuth2AuthCodeSettings",
+            ProviderClassFullName = "RestApia.Extensions.Auth.OAuth2.AuthCode.OAuth2AuthCodeService",
             Content = Tools.SerializeValues(settings),
         };
     }

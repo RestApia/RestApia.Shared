@@ -8,6 +8,11 @@ nuke Shared_Build --SharedLibVersion $version
 
 # find all in Extensions folder
 $extensions = Get-ChildItem -Path .\src\Extensions -Directory
+#$extensions = @(
+#    [PSCustomObject]@{ Name = "RestApia.Extensions.ValuesProvider.AzureKeyVault" },
+#    [PSCustomObject]@{ Name = "RestApia.Extensions.ValuesProvider.CollectionValuesProvider" }
+#)
+
 foreach ($extension in $extensions) {
     nuke Extension_Build --ExtensionName $extension.Name --ExtensionLibVersion $version
 }

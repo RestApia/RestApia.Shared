@@ -38,7 +38,7 @@ internal static class ImportCollection
         return new AuthContentModel
         {
             Name = $"{type} - Unsupported",
-            SettingsClassFullName = string.Empty,
+            ProviderClassFullName = string.Empty,
             Content = new[]
             {
                 $"// Authorization type: '{type}'",

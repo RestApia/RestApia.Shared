@@ -6,50 +6,148 @@ using RestApia.Shared.Common;
 using RestApia.Shared.Common.Enums;
 using RestApia.Shared.Common.Interfaces;
 using RestApia.Shared.Common.Models;
-using RestApia.Shared.Extensions.AuthService;
+using RestApia.Shared.Common.Services;
+using RestApia.Shared.Extensions.ValuesProviderService.Enums;
+using RestApia.Shared.Extensions.ValuesProviderService.Interfaces;
+using RestApia.Shared.Extensions.ValuesProviderService.Models;
 namespace RestApia.Extensions.Auth.OAuth2.AuthCode;
 
-public class OAuth2AuthCodeService : IAuthService
+public class OAuth2AuthCodeService: IAuthValuesProvider
 {
     private static readonly HttpClient AccessTokenHttpClient = new ();
 
-    private readonly IExtensionValuesStorage _storage;
+    private static readonly ValuesProviderSettings Settings = new ()
+    {
+        Title = "OAuth2: Auth Code",
+        CanBeReloaded = true,
+
+        ReservedValues =
+        [
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.AuthUrl),
+                Description = "Authorization URL",
+                IsRequired = true,
+                Placeholder = "https://example.com/oauth2/authorize",
+            },
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.TokenUrl),
+                Description = "Access Token URL",
+                IsRequired = true,
+                Placeholder = "https://example.com/oauth2/token",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.RedirectUrl),
+                Description = "Redirect URL",
+                IsRequired = true,
+                Placeholder = "https://example.com/oauth2/callback",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.ClientId),
+                Description = "Client ID",
+                IsRequired = true,
+                Placeholder = Guid.Empty.ToString(),
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.ClientSecret),
+                Description = "Client Secret",
+                Placeholder = "****************",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.SendMethod),
+                Description = "Credentials sending method",
+                Placeholder = "header or body",
+                ExpectedValues = [string.Empty, null, "header", "body"], // empty string is
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.Scopes),
+                Description = "Scopes",
+                Placeholder = "email; profile",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.Audience),
+                Description = "Audience",
+                Placeholder = "https://example.com/api",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.State),
+                Description = "State",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.Resource),
+                Description = "Resource",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2AuthCodeSettings.Origin),
+                Description = "Origin",
+                Placeholder = "https://example.com",
+            },
+        ],
+    };
+
     private readonly ILogger _logger;
     private readonly IExtensionDialogs _dialogs;
 
-    public OAuth2AuthCodeService(IExtensionValuesStorage storage, ILogger logger, IExtensionDialogs dialogs)
+    public OAuth2AuthCodeService(ILogger logger, IExtensionDialogs dialogs)
     {
-        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _dialogs = dialogs ?? throw new ArgumentNullException(nameof(dialogs));
     }
 
-    public string DisplayName => "OAuth2 Auth Code";
-    public bool IsReloadFeatureAvailable => true;
-    public bool IsShowPayloadFeatureAvailable => true;
-    public Type SettingsType => typeof(OAuth2AuthCodeSettings);
+    public ValuesProviderSettings GetProviderSettings() => Settings;
 
-    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId)
+    public async Task<ReloadValuesResults> ReloadValuesAsync(IReadOnlyCollection<ValueModel> inputValues, ValuesReloadMode mode)
     {
-        var result = _storage.GetValues(authId);
-        result = [..result, ..OAuth2Helper.GetCustomValues(result, _logger)];
-        return Task.FromResult(result);
-    }
+        // all templated values must be replaced
+        var hasUnresolvedValues = mode == ValuesReloadMode.Interactive && inputValues.All(x => x.Value.Parts.All(y => !y.IsTemplatedVariable));
+        if (!hasUnresolvedValues) return ReloadValuesResults.Failed;
 
-    public async Task<bool> ReloadAsync(object settingsObj, Guid authId)
-    {
-        if (settingsObj is not OAuth2AuthCodeSettings settings)
+        // validate settings
+        if (!Settings.ValidateReserved(inputValues, out var errors))
         {
-            _logger.Warn($"Invalid settings type '{settingsObj?.GetType()}' for service {DisplayName} found");
-            return false;
+            var resultError = errors.Count == 1
+                ? errors.ElementAt(0)
+                : errors.Select(x => $"- {x}").JoinString("\r\n");
+            return ReloadValuesResults.FailedWithMessage(resultError);
         }
 
-        var codeResponse = await RequestCodeOrDefaultAsync(settings);
-        if (codeResponse == null) return false;
-        if (!TryExtractCodeOrError(codeResponse, out var codeString)) return false;
+        // try to deserialize settings
+        if (!VariablesConverter.TryDeserialize<OAuth2AuthCodeSettings>(inputValues, out var settings))
+            return ReloadValuesResults.FailedWithMessage("Authorization settings are invalid");
 
-        var tokenString = await RequestTokenOrDefaultAsync(codeString, settings);
-        if (tokenString == null) return false;
+        var (codeResponse, codeError) = await RequestCodeOrDefaultAsync(settings);
+        if (codeError.IsNotEmpty()) return ReloadValuesResults.FailedWithMessage(codeError);
+        if (codeResponse == null) return ReloadValuesResults.Canceled;
+
+        if (!TryExtractCodeOrError(codeResponse, out var codeString, out var extractError))
+        {
+            return extractError.IsNotEmpty()
+                ? ReloadValuesResults.FailedWithMessage(extractError)
+                : ReloadValuesResults.Canceled;
+        }
+
+        var (tokenString, tokenError) = await RequestTokenOrDefaultAsync(codeString, settings);
+        if (tokenError.IsNotEmpty()) return ReloadValuesResults.FailedWithMessage(tokenError);
+        if (tokenString == null) return ReloadValuesResults.Canceled;
 
         // read from token when it will be expired
         DateTime? expiresAt = null;
@@ -62,7 +160,7 @@ public class OAuth2AuthCodeService : IAuthService
             expiresAt = token.ValidTo;
         }
 
-        IReadOnlyCollection<ExtensionValueModel> values =
+        IReadOnlyCollection<ValueModel> values =
         [
             new ()
             {
@@ -72,11 +170,15 @@ public class OAuth2AuthCodeService : IAuthService
             },
         ];
 
-        _storage.SetValues(values, authId, expiresAt);
-        return true;
+        return new ()
+        {
+            Values = [..values, ..OAuth2Helper.GetTokenValues(values, _logger)],
+            ExpiredAt = expiresAt,
+            Status = ValueReloadResultType.Success,
+        };
     }
 
-    private async Task<BrowserDialogResult?> RequestCodeOrDefaultAsync(OAuth2AuthCodeSettings settings)
+    private async Task<(BrowserDialogResult? DialogResult, string? Error)> RequestCodeOrDefaultAsync(OAuth2AuthCodeSettings settings)
     {
         var scopes = settings.Scopes.SplitRegex(";, ");
         var queryParams = new List<KeyValuePair<string, string>>
@@ -94,23 +196,21 @@ public class OAuth2AuthCodeService : IAuthService
         var startUrl = OAuth2Helper.AddQueryParams(settings.AuthUrl, queryParams);
         if (string.IsNullOrWhiteSpace(startUrl))
         {
-            _dialogs.ShowError("Cannot open Authorization page, URL build from parameters is empty");
-            return null;
+            return (null, "Cannot open Authorization page, URL build from parameters is empty");
         }
 
         // build stop URL
         var stopUrl = settings.RedirectUrl;
         if (string.IsNullOrWhiteSpace(stopUrl))
         {
-            _dialogs.ShowError("Redirect URL cannot be empty");
-            return null;
+            return (null, "Redirect URL cannot be empty");
         }
 
         var result = await _dialogs.OpenAuthBrowserAsync(startUrl, stopUrl, "OAuth2 Auth Code");
-        return result;
+        return (result, null);
     }
 
-    private async Task<string?> RequestTokenOrDefaultAsync(string codeString, OAuth2AuthCodeSettings settings)
+    private static async Task<(string? Token, string? Error)> RequestTokenOrDefaultAsync(string codeString, OAuth2AuthCodeSettings settings)
     {
         // prepare request
         var requestParams = new List<KeyValuePair<string, string>>
@@ -129,7 +229,8 @@ public class OAuth2AuthCodeService : IAuthService
             new ("Origin", settings.Origin),
         };
 
-        switch (settings.CredentialsSendMethod.ToLower().Trim())
+        var sendMethod = settings.SendMethod.IsEmpty() ? "header" : settings.SendMethod.ToLower().Trim();
+        switch (sendMethod)
         {
             case "body":
                 requestParams.Add(new ("client_id", settings.ClientId));
@@ -143,7 +244,7 @@ public class OAuth2AuthCodeService : IAuthService
         }
 
         // send request
-        using var request = new HttpRequestMessage(HttpMethod.Post, settings.AccessTokenUrl);
+        using var request = new HttpRequestMessage(HttpMethod.Post, settings.TokenUrl);
         request.Content = new FormUrlEncodedContent(requestParams.Where(x => !x.Value.IsEmpty()));
 
         foreach (var header in headers.Where(x => !x.Value.IsEmpty()))
@@ -152,64 +253,32 @@ public class OAuth2AuthCodeService : IAuthService
         var response = await AccessTokenHttpClient.SendAsync(request);
         if (!response.IsSuccessStatusCode)
         {
-            _dialogs.ShowError($"Cannot retrieve access token. HTTP Status code: {response.ReasonPhrase} ({response.StatusCode})");
-            return null;
+            return (null, $"Cannot retrieve access token. HTTP Status code: {response.ReasonPhrase} ({response.StatusCode})");
         }
 
         // read response
         var responseContent = await response.Content.ReadAsStringAsync();
         if (string.IsNullOrWhiteSpace(responseContent))
         {
-            _dialogs.ShowError("Error occurred during authorization. Empty response received.");
-            return null;
+            return (null, "Error occurred during authorization. Empty response received.");
         }
 
         var extracted = response.Content.Headers.ContentType?.MediaType?.Trim().Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase) == true
-            ? TryExtractTokenFromUrlEncoded(responseContent, out var result)
-            : TryExtractTokenFromJson(responseContent, out result);
+            ? TryExtractTokenFromUrlEncoded(responseContent, out var result, out var extractError)
+            : TryExtractTokenFromJson(responseContent, out result, out extractError);
 
         if (!extracted)
         {
-            _dialogs.ShowError("Error occurred during authorization. Token not found in response.");
-            return null;
+            return (null, extractError.IsNotEmpty() ? extractError : "Error occurred during authorization. Token not found in response.");
         }
 
-        return result;
+        return (result, null);
     }
 
-    private bool TryExtractCodeOrError(BrowserDialogResult response, [NotNullWhen(true)] out string? code)
-    {
-        code = null;
-        var url = response.Url;
-
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            _dialogs.ShowError("Empty URL received in OAuth2 AuthCode flow window");
-            return false;
-        }
-
-        var queryString = OAuth2Helper.GetQueryParams(url);
-
-        // check errors
-        var errorCode = queryString["error"];
-        if (!string.IsNullOrWhiteSpace(errorCode))
-        {
-            var errorDescription = queryString["error_description"];
-            _dialogs.ShowError($"Error response received: {errorDescription} ({errorCode})");
-            return false;
-        }
-
-        // find code
-        code = queryString["code"];
-        if (string.IsNullOrWhiteSpace(code))
-            _dialogs.ShowError("No code found in OAuth2 AuthCode flow window response");
-
-        return !string.IsNullOrWhiteSpace(code);
-    }
-
-    private bool TryExtractTokenFromUrlEncoded(string responseContent, [NotNullWhen(true)] out string? token)
+    private static bool TryExtractTokenFromUrlEncoded(string responseContent, [NotNullWhen(true)] out string? token, [NotNullWhen(false)] out string? error)
     {
         token = null;
+        error = null;
 
         // expected content: access_token=gho_tUWZ&scope=&token_type=bearer
         var responseParams = OAuth2Helper.GetQueryParams(responseContent);
@@ -217,16 +286,18 @@ public class OAuth2AuthCodeService : IAuthService
 
         if (string.IsNullOrWhiteSpace(token))
         {
-            _dialogs.ShowError("Error occurred during authorization. Access token not found.");
+            error = "Error occurred during authorization. Access token not found.";
             return false;
         }
 
         return !token.IsEmpty();
     }
 
-    private bool TryExtractTokenFromJson(string responseContent, out string? token)
+    private static bool TryExtractTokenFromJson(string responseContent, out string? token, [NotNullWhen(false)] out string? error)
     {
         token = null;
+        error = null;
+
         var responseJson = JsonConvert.DeserializeObject<JObject>(responseContent);
 
         /* expected format
@@ -240,23 +311,58 @@ public class OAuth2AuthCodeService : IAuthService
 
         if (responseJson == null)
         {
-            _dialogs.ShowError("Error occurred during authorization. Response content is empty.");
+            error = "Error occurred during authorization. Response content is empty.";
             return false;
         }
 
         if (!responseJson.TryGetValue("access_token", out var accessTokenProp))
         {
-            _dialogs.ShowError("Error occurred during authorization. Access token not found.");
+            error = "Error occurred during authorization. Access token not found.";
             return false;
         }
 
         token = accessTokenProp.Value<string?>();
         if (string.IsNullOrWhiteSpace(token))
         {
-            _dialogs.ShowError("Error occurred during authorization. Access token is empty.");
+            error = "Error occurred during authorization. Access token is empty.";
             return false;
         }
 
         return true;
+    }
+
+    private static bool TryExtractCodeOrError(BrowserDialogResult response, [NotNullWhen(true)] out string? code, [NotNullWhen(false)] out string? error)
+    {
+        code = null;
+        error = null;
+
+        var url = response.Url;
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            error = "Empty URL received in OAuth2 AuthCode flow window";
+            return false;
+        }
+
+        var queryString = OAuth2Helper.GetQueryParams(url);
+
+        // check errors
+        var errorCode = queryString["error"];
+        if (!string.IsNullOrWhiteSpace(errorCode))
+        {
+            var errorDescription = queryString["error_description"];
+            error = $"Error response received: {errorDescription} ({errorCode})";
+            return false;
+        }
+
+        // find code
+        code = queryString["code"];
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            error = "No code found in OAuth2 AuthCode flow window response";
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(code);
     }
 }

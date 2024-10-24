@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using RestApia.Extensions.Import.Postman;
-namespace RestApia.Experiments.Tests.Import;
+﻿using RestApia.Extensions.Import.Postman;
+namespace RestApia.Experiments.Tests.Extensions.Import;
 
 public class PostmanImportExperiments
 {
