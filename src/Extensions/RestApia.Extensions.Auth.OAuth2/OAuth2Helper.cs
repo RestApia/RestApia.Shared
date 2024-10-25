@@ -41,22 +41,21 @@ internal static class OAuth2Helper
         return uriBuilder.ToString();
     }
 
-    public static IReadOnlyCollection<ExtensionValueModel> GetCustomValues(IReadOnlyCollection<ExtensionValueModel> original, ILogger logger)
+    public static IReadOnlyCollection<ValueModel> GetTokenValues(IReadOnlyCollection<ValueModel> original, ILogger logger)
     {
         var tokenStr = original.FirstOrDefault(x => x.Name == "Authorization")?.Value?.ToString().Split(' ').LastOrDefault();
 
         if (string.IsNullOrWhiteSpace(tokenStr) || !TryParseToken(tokenStr, logger, out var token)) return [];
 
-        var result = new List<ExtensionValueModel>();
-        result.Add(new () { Name = "Valid from", Value = token.ValidFrom.ToString("s"), Type = ValueTypeEnum.Other, Description = "Info" });
-        result.Add(new () { Name = "Valid to", Value = token.ValidTo.ToString("s"), Type = ValueTypeEnum.Other, Description = "Info" });
-        result.Add(new () { Name = "Expired in", Value = token.ValidTo > DateTime.UtcNow ? (token.ValidTo - DateTime.UtcNow).ToString("g") : "Expired", Type = ValueTypeEnum.Other, Description = "Info" });
-        result.AddRange(token.Claims.Select(claim => new ExtensionValueModel
+        var result = new List<ValueModel>();
+        result.Add(new () { Name = "Valid from", Value = token.ValidFrom.ToString("s"), Type = ValueTypeEnum.Other, TypeDetails = "Info" });
+        result.Add(new () { Name = "Valid to", Value = token.ValidTo.ToString("s"), Type = ValueTypeEnum.Other, TypeDetails = "Info" });
+        result.AddRange(token.Claims.Select(claim => new ValueModel
         {
             Name = claim.Type,
             Value = claim.Value,
             Type = ValueTypeEnum.Other,
-            Description = "JWT Claim",
+            TypeDetails = "JWT Claim",
         }));
 
         return result;

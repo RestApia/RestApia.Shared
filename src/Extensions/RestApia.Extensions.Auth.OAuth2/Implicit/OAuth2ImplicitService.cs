@@ -1,43 +1,93 @@
-﻿using System.Web;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Web;
 using RestApia.Shared.Common;
 using RestApia.Shared.Common.Enums;
 using RestApia.Shared.Common.Interfaces;
 using RestApia.Shared.Common.Models;
-using RestApia.Shared.Extensions.AuthService;
+using RestApia.Shared.Common.Services;
+using RestApia.Shared.Extensions.ValuesProviderService.Enums;
+using RestApia.Shared.Extensions.ValuesProviderService.Interfaces;
+using RestApia.Shared.Extensions.ValuesProviderService.Models;
 namespace RestApia.Extensions.Auth.OAuth2.Implicit;
 
-public class OAuth2ImplicitService : IAuthService
+public class OAuth2ImplicitService: IAuthValuesProvider
 {
-    private readonly IExtensionValuesStorage _storage;
+    private static readonly ValuesProviderSettings Settings = new ()
+    {
+        Title = "OAuth2: Implicit",
+        CanBeReloaded = true,
+        ReservedValues =
+        [
+            new ()
+            {
+                Name = nameof(OAuth2ImplicitSettings.AuthUrl),
+                Description = "Authorization URL",
+                IsRequired = true,
+                Placeholder = "https://example.com/oauth2/authorize",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2ImplicitSettings.RedirectUrl),
+                Description = "Redirect URL",
+                IsRequired = true,
+                Placeholder = "https://example.com/oauth2/callback",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2ImplicitSettings.ClientId),
+                Description = "Client ID",
+                IsRequired = true,
+                Placeholder = Guid.Empty.ToString(),
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2ImplicitSettings.Scopes),
+                Description = "Scopes",
+                Placeholder = "email; profile",
+            },
+
+            new ()
+            {
+                Name = nameof(OAuth2ImplicitSettings.Audience),
+                Description = "Audience",
+                Placeholder = "https://example.com/api",
+            },
+        ],
+    };
+
     private readonly ILogger _logger;
     private readonly IExtensionDialogs _dialogs;
 
-    public OAuth2ImplicitService(IExtensionValuesStorage storage, ILogger logger, IExtensionDialogs dialogs)
+    public OAuth2ImplicitService(ILogger logger, IExtensionDialogs dialogs)
     {
-        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _dialogs = dialogs ?? throw new ArgumentNullException(nameof(dialogs));
     }
 
-    public string DisplayName => "OAuth2 Implicit";
-    public bool IsReloadFeatureAvailable => true;
-    public bool IsShowPayloadFeatureAvailable => true;
-    public Type SettingsType => typeof(OAuth2ImplicitSettings);
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
+    public ValuesProviderSettings GetProviderSettings() => Settings;
 
-    public Task<IReadOnlyCollection<ExtensionValueModel>> GetValuesAsync(object settingsObj, Guid authId)
+    public async Task<ReloadValuesResults> ReloadValuesAsync(IReadOnlyCollection<ValueModel> inputValues, ValuesReloadMode mode)
     {
-        var result = _storage.GetValues(authId);
-        result = [..result, ..OAuth2Helper.GetCustomValues(result, _logger)];
-        return Task.FromResult(result);
-    }
+        // all templated values must be replaced
+        var hasUnresolvedValues = mode == ValuesReloadMode.Interactive && inputValues.All(x => x.Value.Parts.All(y => !y.IsTemplatedVariable));
+        if (!hasUnresolvedValues) return ReloadValuesResults.Failed;
 
-    public async Task<bool> ReloadAsync(object settingsObj, Guid authId)
-    {
-        if (settingsObj is not OAuth2ImplicitSettings settings)
+        // validate settings
+        if (!Settings.ValidateReserved(inputValues, out var errors))
         {
-            _logger.Warn($"Invalid settings type '{settingsObj?.GetType()}' for service {DisplayName} found");
-            return false;
+            var resultError = errors.Count == 1
+                ? errors.ElementAt(0)
+                : errors.Select(x => $"- {x}").JoinString("\r\n");
+            return ReloadValuesResults.FailedWithMessage(resultError);
         }
+
+        // try to deserialize settings
+        if (!VariablesConverter.TryDeserialize<OAuth2ImplicitSettings>(inputValues, out var settings))
+            return ReloadValuesResults.FailedWithMessage("Authorization settings are invalid");
 
         // build start URL
         var scopes = settings.Scopes.SplitRegex(";, ");
@@ -52,34 +102,25 @@ public class OAuth2ImplicitService : IAuthService
         ]);
 
         if (string.IsNullOrWhiteSpace(startUrl))
-        {
-            _dialogs.ShowError("Cannot open Authorization page, URL build from parameters is empty");
-            return false;
-        }
+            return ReloadValuesResults.FailedWithMessage("Cannot open Authorization page, URL build from parameters is empty");
 
         // build stop URL
         var stopUrl = settings.RedirectUrl;
         if (string.IsNullOrWhiteSpace(stopUrl))
-        {
-            _dialogs.ShowError("Redirect URL cannot be empty");
-            return false;
-        }
+            return ReloadValuesResults.FailedWithMessage("Redirect URL cannot be empty");
 
         // var result = await AuthWindow.OpenDialogAsync(startUrl, stopUrl, context.AuthDna.Name, context.ParentWindow, context.Services);
-        var result = await _dialogs.OpenAuthBrowserAsync(startUrl, stopUrl, "OAuth2 Implicit");
-        if (result == null)
+        var response = await _dialogs.OpenAuthBrowserAsync(startUrl, stopUrl, "OAuth2 Implicit");
+        if (response == null)
         {
             _logger.Debug("Auth canceled by user");
-            return false;
+            return ReloadValuesResults.Canceled;
         }
 
         // validate response and extract access token
-        var errorMessage = TryGetTokenOrError(result, out var tokenString);
+        var errorMessage = TryGetTokenOrError(response, out var tokenString);
         if (!string.IsNullOrWhiteSpace(errorMessage))
-        {
-            _dialogs.ShowError(errorMessage);
-            return false;
-        }
+            return ReloadValuesResults.FailedWithMessage(errorMessage);
 
         // read from token when it will be expired
         DateTime? expiresAt = null;
@@ -92,7 +133,7 @@ public class OAuth2ImplicitService : IAuthService
             expiresAt = token.ValidTo;
         }
 
-        IReadOnlyCollection<ExtensionValueModel> values =
+        IReadOnlyCollection<ValueModel> values =
         [
             new ()
             {
@@ -101,9 +142,12 @@ public class OAuth2ImplicitService : IAuthService
                 Value = $"Bearer {tokenString}",
             },
         ];
-
-        _storage.SetValues(values, authId, expiresAt);
-        return true;
+        return new ()
+        {
+            Values = [..values, ..OAuth2Helper.GetTokenValues(values, _logger)],
+            ExpiredAt = expiresAt,
+            Status = ValueReloadResultType.Success,
+        };
     }
 
     private static string TryGetTokenOrError(BrowserDialogResult result, out string? token)

@@ -19,7 +19,7 @@ public static class ImportAuthBasic
         {
             Name = "Basic Authorization",
             Content = Tools.SerializeValues(settings),
-            SettingsClassFullName = "RestApia.Extensions.Auth.Basic.BasicAuthSettings",
+            ProviderClassFullName = "RestApia.Extensions.Auth.Basic.BasicAuthService",
         };
     }
 }
