@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RestApia.Experiments.Desktop.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Background="#ff212225"
+        Title="RestApia.Experiments.Desktop">
+    
+    <Border VerticalAlignment="Top" Margin="10">
+        <Grid ColumnDefinitions="Auto *" RowDefinitions="Auto Auto">
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Authorization:" VerticalAlignment="Center" Margin="10" TextAlignment="Right"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                <Button Click="Auth_OAuth2_AuthCode_OnClick">OAuth2: Auth Code</Button>
+                <Button Click="Auth_OAuth2_Implicit_OnClick">OAuth2: Implicit</Button>
+                <Button Click="Auth_Basic_OnClick">Basic</Button>
+            </StackPanel>
+            
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Secrets:" VerticalAlignment="Center" Margin="10" TextAlignment="Right"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                <Button Click="Secrets_AzureKeyVault_OnClick">Azure KeyVaults</Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+
+</Window>
