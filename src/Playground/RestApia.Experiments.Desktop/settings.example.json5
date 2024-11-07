@@ -1,0 +1,27 @@
+// this is an example of the settings.local.json5 file 
+// that should be created in the project directory
+
+{
+  // OAuth2 Implicit Flow settings
+  "OAuth2ImplicitSettings": {
+    "AuthUrl": "https://example.com/oauth2/authorize",
+    "RedirectUrl": "https://example.com/oauth2/callback",
+    "ClientId": "example-client-id",
+    "Scopes": "openid profile email",
+  },
+   
+  // OAuth2 Authorization Code Flow settings
+  "OAuth2AuthCodeSettings": {
+    "AuthUrl": "https://example.com/oauth2/authorize",
+    "TokenUrl": "https://example.com/oauth2/token",
+    "RedirectUrl": "https://example.com/oauth2/callback",
+    "ClientId": "example-client-id",
+    "SendMethod": "Body",
+    "Scopes": "openid profile email",
+  },
+  
+  // Azure KeyVault settings
+  "KeyVaultSettings":{
+    "KeyVaultUrl": "https://example.vault.azure.net/",
+  }
+}

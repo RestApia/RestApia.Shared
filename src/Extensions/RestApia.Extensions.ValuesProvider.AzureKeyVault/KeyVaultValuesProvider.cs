@@ -60,21 +60,29 @@ public class KeyVaultValuesProvider : IUserValuesProvider
         if (!VariablesConverter.TryDeserialize<KeyVaultSettings>(inputValues, out var settings))
             return ReloadValuesResults.Failed;
 
+        var values = await GetRemoteValuesAsync(settings);
+        if (values == null) return ReloadValuesResults.Failed;
+
         return new ReloadValuesResults
-            { Values = await GetRemoteValuesAsync(settings), Status = ValueReloadResultType.Success };
+        {
+            Values = values,
+            Status = ValueReloadResultType.Success,
+        };
     }
 
-    private async Task<IReadOnlyCollection<ValueModel>> GetRemoteValuesAsync(KeyVaultSettings settings)
+    private async Task<IReadOnlyCollection<ValueModel>?> GetRemoteValuesAsync(KeyVaultSettings settings)
     {
         if (!Uri.TryCreate(settings.KeyVaultUrl, UriKind.Absolute, out var keyVaultUrl))
         {
             _dialogs.ShowError("Cannot read KeyVault secret values. KeyVault URL is not valid.");
-            return [];
+            return null;
         }
 
         var credentials = BuildCredentials(settings);
         var client = BuildClient(keyVaultUrl, credentials);
         var result = await ReadValuesAsync(client, settings);
+
+        if (result == null) return null;
 
         return
         [
@@ -88,14 +96,13 @@ public class KeyVaultValuesProvider : IUserValuesProvider
         ];
     }
 
-    private async Task<IReadOnlyCollection<ValueModel>> ReadValuesAsync(SecretClient client, KeyVaultSettings settings)
+    private async Task<IReadOnlyCollection<ValueModel>?> ReadValuesAsync(SecretClient client, KeyVaultSettings settings)
     {
-        var result = new List<ValueModel>();
-
         try
         {
             // get list of secrets
             var secretProperties = client.GetPropertiesOfSecrets();
+            var result = new List<ValueModel>();
 
             foreach (var secretProperty in secretProperties)
             {
@@ -107,14 +114,16 @@ public class KeyVaultValuesProvider : IUserValuesProvider
                     Type = ValueTypeEnum.Variable,
                 });
             }
+
+            return result;
         }
         catch (Exception ex)
         {
             _logger.Fail(ex, $"Cannot read KeyVault secret values from remote. {ex.Message}");
             _dialogs.ShowError("Cannot read KeyVault secret values from remote.");
-        }
 
-        return result;
+            return null;
+        }
     }
 
     private static SecretClient BuildClient(Uri url, TokenCredential credentials)
