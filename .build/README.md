@@ -7,6 +7,7 @@
 - `.\build.ps1 Extension_Build --ExtensionName RestApia.Extensions.Auth.OAuth2` - build NuGet package for the OAuth2 extension
   - optional `--ExtensionLibVersion 1.0.0` to specify the version
 - `.\build.ps1 Extension_Push --ExtensionName RestApia.Extensions.Auth.OAuth2` - build the OAuth2 extension and push it to the NuGet server
+- `.\build.ps1 Extension_Build --ExtensionLibVersion 1.1.4-dev --ExtensionName RestApia.Extensions.ValuesProvider.AzureKeyVault` - to build preview version (will be visible for DEV channel app only)
 
 ## Shared library build
 

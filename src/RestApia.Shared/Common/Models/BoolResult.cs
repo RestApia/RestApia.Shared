@@ -13,4 +13,8 @@ public record BoolResult
 }
 
 public record TrueResult : BoolResult;
-public record FalseResult(string? Message = null) : BoolResult;
+
+public record FalseResult(string? Message = null) : BoolResult
+{
+    public override string ToString() => Message ?? "False";
+}

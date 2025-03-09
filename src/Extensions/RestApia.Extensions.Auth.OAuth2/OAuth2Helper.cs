@@ -56,6 +56,7 @@ internal static class OAuth2Helper
             Value = claim.Value,
             Type = ValueTypeEnum.Other,
             TypeDetails = "JWT Claim",
+            IsSecret = claim.Type is "upn" or "unique_name" or "preferred_username" or "otp",
         }));
 
         return result;

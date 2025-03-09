@@ -167,6 +167,7 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
                 Name = "Authorization",
                 Type = ValueTypeEnum.Header,
                 Value = $"Bearer {tokenString}",
+                IsSecret = true,
             },
         ];
 

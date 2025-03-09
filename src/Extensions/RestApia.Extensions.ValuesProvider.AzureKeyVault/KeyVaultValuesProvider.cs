@@ -112,6 +112,7 @@ public class KeyVaultValuesProvider : IUserValuesProvider
                     Name = secretProperty.Name,
                     Value = secret.Value.Value,
                     Type = ValueTypeEnum.Variable,
+                    IsSecret = true,
                 });
             }
 

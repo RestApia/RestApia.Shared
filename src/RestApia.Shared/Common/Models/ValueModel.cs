@@ -8,4 +8,5 @@ public record ValueModel
     public required ValueTypeEnum Type { get; init; }
     public string TypeDetails { get; init; } = string.Empty;
     public string SourceName { get; init; } = string.Empty;
+    public bool IsSecret { get; init; }
 }
