@@ -4,7 +4,7 @@
     <Title>Azure KeyVault Values Provider</Title>
     <Description>Extensions provides Azure KeyVault secrets as variables</Description>
     <RepositoryUrl>https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.ValuesProvider.AzureKeyVault</RepositoryUrl>
-    <PackageTags>RestApia, Extension, Values Provider</PackageTags>
+    <PackageTags>RestApia, RestApia:0.5.0, Extension, Values Provider</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
