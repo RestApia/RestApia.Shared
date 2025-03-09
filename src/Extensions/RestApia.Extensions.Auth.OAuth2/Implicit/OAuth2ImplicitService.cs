@@ -140,6 +140,7 @@ public class OAuth2ImplicitService: IAuthValuesProvider
                 Name = "Authorization",
                 Type = ValueTypeEnum.Header,
                 Value = $"Bearer {tokenString}",
+                IsSecret = true,
             },
         ];
         return new ()
