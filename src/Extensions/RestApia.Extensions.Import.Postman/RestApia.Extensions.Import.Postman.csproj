@@ -4,7 +4,7 @@
     <Title>Import Postman Collection v2.1</Title>
     <Description>Adds a new option to import Postman Collection v2.1, making it easy to bring your collections into RestApia for testing and development.</Description>
     <RepositoryUrl>https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.Import.Postman</RepositoryUrl>
-    <PackageTags>RestApiaEmbedded, Extension, Import</PackageTags>
+    <PackageTags>RestApiaEmbedded, Extension, Import, Preview</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
