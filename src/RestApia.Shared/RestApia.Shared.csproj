@@ -7,8 +7,6 @@
     <RepositoryUrl>https://github.com/RestApia/RestApia.Shared</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.4</Version>
-    <AssemblyVersion>1.0.4</AssemblyVersion>
   </PropertyGroup>
   
   <ItemGroup>

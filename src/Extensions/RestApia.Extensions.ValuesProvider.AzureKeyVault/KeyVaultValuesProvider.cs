@@ -61,7 +61,7 @@ public class KeyVaultValuesProvider : IUserValuesProvider
             return ReloadValuesResults.Failed;
 
         var values = await GetRemoteValuesAsync(settings);
-        if (values == null) return ReloadValuesResults.Failed;
+        if (values == null) return ReloadValuesResults.Canceled;
 
         return new ReloadValuesResults
         {
