@@ -16,7 +16,7 @@ public class OAuth2ImplicitService : IAuthValuesProvider
     {
         Title = "OAuth2: Implicit",
         DefaultName = "OAuth2 Implicit",
-        Description = "A window will open, taking you to the service provider to grant permission. Upon approval, an access token will be directly provided and automatically used as the Bearer authorization header.",
+        Description = "A window will open, taking you to the service provider to grant permission. Upon approval, an access token will be directly provided and automatically used as Bearer authorization header.",
         CanBeReloaded = true,
         ReservedValues =
         [

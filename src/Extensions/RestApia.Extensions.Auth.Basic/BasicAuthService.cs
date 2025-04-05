@@ -15,7 +15,7 @@ public class BasicAuthService: IAuthValuesProvider
     {
         Title = "Basic Authentication",
         DefaultName = "Basic Auth",
-        Description = "Provide your login ID and password. This application will take these details and include them in the request header using the Basic Authentication standard.",
+        Description = "Provide your login ID and password. RestApia will take these details and include them in the request header using the Basic Authentication standard.",
         CanBeReloaded = true,
         DisableCachingResults = true,
         ReservedValues =

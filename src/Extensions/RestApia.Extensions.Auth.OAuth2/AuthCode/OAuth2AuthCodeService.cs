@@ -20,7 +20,7 @@ public class OAuth2AuthCodeService : IAuthValuesProvider
     {
         Title = "OAuth2: Auth Code",
         DefaultName = "OAuth2 Auth Code",
-        Description = "A window will open, taking you to the service provider's page to log in and grant permission. The provider will then issue a JWT token, which will be automatically used as the Bearer authorization header.",
+        Description = "A window will open, taking you to the service provider's page to log in and grant permission. Credentials provider will then issue a JWT token, which will be automatically used as Bearer authorization header.",
         CanBeReloaded = true,
 
         ReservedValues =

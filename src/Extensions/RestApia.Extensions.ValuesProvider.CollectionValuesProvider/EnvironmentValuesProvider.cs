@@ -11,7 +11,7 @@ public class EnvironmentValuesProvider: IEnvironmentValuesProvider
     {
         Title = "Environment Values",
         DefaultName = "DEV",
-        Description = "Environments help you keep your API interactions organized by separating configurations for different stages or versions of the APIs you are using",
+        Description = "Environments help you keep your API interactions organized by separating configurations for different stages or versions of the APIs you are using. You can create multiple environments, each with its own set of values, headers and cookies.",
         CanBeReloaded = false,
         DisableCachingResults = true,
         HelpPageUrl = "https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.ValuesProvider.CollectionValuesProvider",
