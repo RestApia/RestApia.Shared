@@ -10,6 +10,7 @@ public class UserValuesProvider: IUserValuesProvider
     public ValuesProviderSettings GetProviderSettings() => new ()
     {
         Title = "User Values",
+        DefaultName = "Global values",
         CanBeReloaded = false,
         DisableCachingResults = true,
         HelpPageUrl = "https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.ValuesProvider.CollectionValuesProvider",

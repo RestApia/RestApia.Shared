@@ -12,13 +12,15 @@ using RestApia.Shared.Extensions.ValuesProviderService.Interfaces;
 using RestApia.Shared.Extensions.ValuesProviderService.Models;
 namespace RestApia.Extensions.Auth.OAuth2.AuthCode;
 
-public class OAuth2AuthCodeService: IAuthValuesProvider
+public class OAuth2AuthCodeService : IAuthValuesProvider
 {
     private static readonly HttpClient AccessTokenHttpClient = new ();
 
     private static readonly ValuesProviderSettings Settings = new ()
     {
         Title = "OAuth2: Auth Code",
+        DefaultName = "OAuth2 Auth Code",
+        Description = "A window will open, taking you to the service provider's page to log in and grant permission. Credentials provider will then issue a JWT token, which will be automatically used as Bearer authorization header.",
         CanBeReloaded = true,
 
         ReservedValues =
@@ -26,14 +28,14 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.AuthUrl),
-                Description = "Authorization URL",
+                Description = "Authorization endpoint",
                 IsRequired = true,
                 Placeholder = "https://example.com/oauth2/authorize",
             },
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.TokenUrl),
-                Description = "Access Token URL",
+                Description = "Access token endpoint",
                 IsRequired = true,
                 Placeholder = "https://example.com/oauth2/token",
             },
@@ -41,7 +43,7 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.RedirectUrl),
-                Description = "Redirect URL",
+                Description = "Callback URL after authorization",
                 IsRequired = true,
                 Placeholder = "https://example.com/oauth2/callback",
             },
@@ -49,7 +51,7 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.ClientId),
-                Description = "Client ID",
+                Description = "Your application's public identifier",
                 IsRequired = true,
                 Placeholder = Guid.Empty.ToString(),
             },
@@ -57,14 +59,14 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.ClientSecret),
-                Description = "Client Secret",
+                Description = "Your application's secret key",
                 Placeholder = "****************",
             },
 
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.SendMethod),
-                Description = "Credentials sending method",
+                Description = "How to send client credentials",
                 Placeholder = "header or body",
                 ExpectedValues = [string.Empty, null, "header", "body"], // empty string is
             },
@@ -72,36 +74,88 @@ public class OAuth2AuthCodeService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.Scopes),
-                Description = "Scopes",
+                Description = "Requested permissions",
                 Placeholder = "email; profile",
             },
 
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.Audience),
-                Description = "Audience",
+                Description = "Target resource server",
                 Placeholder = "https://example.com/api",
             },
 
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.State),
-                Description = "State",
+                Description = "Optional security token",
             },
 
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.Resource),
-                Description = "Resource",
+                Description = "Specific resource to access",
             },
 
             new ()
             {
                 Name = nameof(OAuth2AuthCodeSettings.Origin),
-                Description = "Origin",
+                Description = "The origin of the request",
                 Placeholder = "https://example.com",
             },
         ],
+
+        Examples = new Dictionary<string, string>
+        {
+            {
+                "Default", string.Join("\n", [
+                    "AuthUrl: https://your-auth-provider.com/oauth2/authorize",
+                    "TokenUrl: https://your-auth-provider.com/oauth2/token",
+                    "RedirectUrl: https://localhost/auth_callback",
+                    "ClientId: your_client_id",
+                    "ClientSecret: your_client_secret",
+                ])
+            },
+            {
+                "Azure - Entra Id", string.Join("\n", [
+                    "// Usually defined as environment variables",
+                    "// host: https://localhost:1234",
+                    "// EntraId.Client: 019607db-89cd-7b36-a6ba-005cafd23fd2",
+                    "// EntraId.Secret: your_entra_id_client_secret",
+                    "// EntraId.Scopes: api://restapia-demo/Test",
+                    string.Empty,
+                    "// values",
+                    "EntraId.TenantId: 019606ad-ba48-77dd-b008-9354e8bd9d7d",
+                    string.Empty,
+                    "// settings",
+                    "AuthUrl: https://login.microsoftonline.com/{{EntraId.TenantId}}/oauth2/v2.0/authorize",
+                    "TokenUrl: https://login.microsoftonline.com/{{EntraId.TenantId}}/oauth2/v2.0/token",
+                    "RedirectUrl: {{host}}/oauth2-callback",
+                    "ClientId: {{EntraId.Client}}",
+                    "ClientSecret: {{EntraId.Secret}}",
+                    "Scopes: {{EntraId.Scopes}}",
+                    "SendMethod: body", // Or "header", depending on Entra ID configuration
+                ])
+            },
+            {
+                "Google OAuth 2.0", string.Join("\n", [
+                    "// Usually defined as environment variables",
+                    "// host: https://localhost:1234",
+                    "// Google.Client: your_google_client_id",
+                    "// Google.Secret: your_google_client_secret",
+                    "// Google.Scopes: https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+                    string.Empty,
+                    "// settings",
+                    "AuthUrl: https://accounts.google.com/o/oauth2/v2/auth",
+                    "TokenUrl: https://oauth2.googleapis.com/token",
+                    "RedirectUrl: {{host}}/oauth2-callback",
+                    "ClientId: {{Google.Client}}",
+                    "ClientSecret: {{Google.Secret}}",
+                    "Scopes: {{Google.Scopes}}",
+                    "SendMethod: body",
+                ])
+            },
+        },
     };
 
     private readonly ILogger _logger;
