@@ -13,13 +13,15 @@ public class BasicAuthService: IAuthValuesProvider
 {
     private static readonly ValuesProviderSettings Settings = new ()
     {
-        Title = "Basic Authorization",
+        Title = "Basic Authentication",
+        DefaultName = "Basic Auth",
+        Description = "Provide your login ID and password. This application will take these details and include them in the request header using the Basic Authentication standard.",
         CanBeReloaded = true,
         DisableCachingResults = true,
         ReservedValues =
         [
-            new () { Name = nameof(BasicAuthSettings.Name), Description = "User name", IsRequired = true, Placeholder = "User" },
-            new () { Name = nameof(BasicAuthSettings.Password), Description = "User Password", Placeholder = "secret" },
+            new () { Name = nameof(BasicAuthSettings.Name), Description = "Login identifier or username", IsRequired = true, Placeholder = "user" },
+            new () { Name = nameof(BasicAuthSettings.Password), Description = "Your secret password", Placeholder = "password" },
         ],
     };
 

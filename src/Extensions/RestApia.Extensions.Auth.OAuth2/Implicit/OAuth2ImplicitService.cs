@@ -10,18 +10,20 @@ using RestApia.Shared.Extensions.ValuesProviderService.Interfaces;
 using RestApia.Shared.Extensions.ValuesProviderService.Models;
 namespace RestApia.Extensions.Auth.OAuth2.Implicit;
 
-public class OAuth2ImplicitService: IAuthValuesProvider
+public class OAuth2ImplicitService : IAuthValuesProvider
 {
     private static readonly ValuesProviderSettings Settings = new ()
     {
         Title = "OAuth2: Implicit",
+        DefaultName = "OAuth2 Implicit",
+        Description = "A window will open, taking you to the service provider to grant permission. Upon approval, an access token will be directly provided and automatically used as the Bearer authorization header.",
         CanBeReloaded = true,
         ReservedValues =
         [
             new ()
             {
                 Name = nameof(OAuth2ImplicitSettings.AuthUrl),
-                Description = "Authorization URL",
+                Description = "Authorization endpoint URL",
                 IsRequired = true,
                 Placeholder = "https://example.com/oauth2/authorize",
             },
@@ -29,7 +31,7 @@ public class OAuth2ImplicitService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2ImplicitSettings.RedirectUrl),
-                Description = "Redirect URL",
+                Description = "Callback URL after authorization",
                 IsRequired = true,
                 Placeholder = "https://example.com/oauth2/callback",
             },
@@ -37,7 +39,7 @@ public class OAuth2ImplicitService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2ImplicitSettings.ClientId),
-                Description = "Client ID",
+                Description = "Your application's public identifier",
                 IsRequired = true,
                 Placeholder = Guid.Empty.ToString(),
             },
@@ -45,17 +47,61 @@ public class OAuth2ImplicitService: IAuthValuesProvider
             new ()
             {
                 Name = nameof(OAuth2ImplicitSettings.Scopes),
-                Description = "Scopes",
+                Description = "Permissions your application requests",
                 Placeholder = "email; profile",
             },
 
             new ()
             {
                 Name = nameof(OAuth2ImplicitSettings.Audience),
-                Description = "Audience",
+                Description = "Target resource server",
                 Placeholder = "https://example.com/api",
             },
         ],
+        Examples = new Dictionary<string, string>
+        {
+            {
+                "Default", string.Join("\n", [
+                    "AuthUrl: https://your-auth-provider.com/authorize",
+                    "RedirectUrl: https://localhost/auth_callback",
+                    "ClientId: 00000000-0000-0000-0000-000000000000",
+                ])
+            },
+            {
+                "Azure - Entra Id", string.Join("\n", [
+                    "// Usually defined as environment variables",
+                    "// host: https://localhost:1234",
+                    "// EntraId.Client: 019607db-89cd-7b36-a6ba-005cafd23fd2",
+                    "// EntraId.Scopes: api://restapia-demo/Test",
+                    string.Empty,
+                    "// values",
+                    "EntraId.TenantId: 019606ad-ba48-77dd-b008-9354e8bd9d7d",
+                    string.Empty,
+                    "// settings",
+                    "AuthUrl: https://login.microsoftonline.com/{{EntraId.TenantId}}/oauth2/v2.0/authorize",
+                    "RedirectUrl: {{host}}/oauth2-callback",
+                    "ClientId: {{EntraId.Client}}",
+                    "Scopes: {{EntraId.Scopes}}",
+                ])
+            },
+            {
+                "AWS", string.Join("\n", [
+                    "// Usually defined as environment variables",
+                    "// host: https://localhost:1234",
+                    "// AWS.Client: 019607db-89cd-7b36-a6ba-005cafd23fd2",
+                    "// AWS.Scopes: openid",
+                    string.Empty,
+                    "// values",
+                    "AWS.Prefix: restapia-auth",
+                    string.Empty,
+                    "// settings",
+                    "AuthUrl: https://{{AWS.Prefix}}.auth.us-east-1.amazoncognito.com/oauth2/authorize",
+                    "RedirectUrl: {{host}}/oauth2-callback",
+                    "ClientId: {{AWS.Client}}",
+                    "Scopes: {{AWS.Scopes}}",
+                ])
+            },
+        },
     };
 
     private readonly ILogger _logger;

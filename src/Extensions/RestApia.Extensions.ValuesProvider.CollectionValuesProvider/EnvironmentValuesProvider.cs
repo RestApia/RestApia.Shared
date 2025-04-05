@@ -9,7 +9,9 @@ public class EnvironmentValuesProvider: IEnvironmentValuesProvider
     // no reserved values or custom controls
     public ValuesProviderSettings GetProviderSettings() => new ()
     {
-        Title = "User Values",
+        Title = "Environment Values",
+        DefaultName = "DEV",
+        Description = "Environments help you keep your API interactions organized by separating configurations for different stages or versions of the APIs you are using",
         CanBeReloaded = false,
         DisableCachingResults = true,
         HelpPageUrl = "https://github.com/RestApia/RestApia.Shared/tree/main/src/Extensions/RestApia.Extensions.ValuesProvider.CollectionValuesProvider",
